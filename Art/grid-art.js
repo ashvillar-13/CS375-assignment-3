@@ -1,4 +1,4 @@
-function createGrid(rows, cols, drawingX, drawingY) {
+function createGrid(rows, cols, drawing) {
   const container = document.querySelector("#grid");
   container.innerHTML = ""; // Clear existing content
 
@@ -14,9 +14,14 @@ function createGrid(rows, cols, drawingX, drawingY) {
     .fill(null)
     .map(() => Array(cols).fill(0));
 
-  for (let cord = 0; cord < drawingX.length; cord++) {
-    gridState[drawingX[cord]][drawingY[cord]] = 1;
-  } 
+  // for (let cord = 0; cord < drawingX.length; cord++) {
+  //   gridState[drawingX[cord]][drawingY[cord]] = 1;
+  // }
+
+  for (let cord = 0; cord < drawing.length; cord++) {
+    gridbox = drawing[cord];
+    gridState[gridbox[0]][gridbox[1]] = 1;
+  }
 
   for (let y = 0; y < rows; y++) {
     //let vs var
