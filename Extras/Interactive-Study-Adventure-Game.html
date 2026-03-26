@@ -31,22 +31,31 @@
     <p id="scoreText">Score: 0</p>
     <p id="storyText"></p>
     <p id="questionText"></p>
+    <div id="optionsContainer"></div>
 
     <input type="text" id="answerInput" placeholder="Enter answer">
 
     <br><br>
 
-    <button onclick="checkAnswer()">Submit</button>
-    <button onclick="showHint()">Hint</button>
+    <button id="submitButton" onclick="checkAnswer()">Submit</button>
+    <button id="hintButton" onclick="showHint()">Hint</button>
+    <button id="skipButton" onclick="skipQuestion()">Skip</button>
 
     <p id="feedback"></p>
-    <p id="hintText"></p>
+    <p id="finalScore"></p>
 
-    <p id="timerText"></p> <!-- ADD THIS for timer -->
+    <p id="timerText"></p>
 
     <br>
     <button onclick="goToMenu()">Back to Menu</button>
 </section>
+
+<div id="hintModal" style="display:none;">
+    <div class="modal-content">
+        <p id="hintText"></p>
+        <button id="closeHintBtn">Close</button>
+    </div>
+</div>
 
 <script src="Interactive-Study-Adventure-Game-Script.js"></script>
 

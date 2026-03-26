@@ -30,7 +30,7 @@ function createGrid(rows, cols, drawing) {
       cell.dataset.x = x;
       cell.dataset.y = y;
 
-      if (gridState[x][y] == 1) {
+      if (gridState[y][x] == 1) {
         // Toggle visual state
         cell.style.backgroundColor = "black";
       } else {

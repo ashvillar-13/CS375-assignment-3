@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Study Adventure</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="game-container">
+
+    <!-- ================= MENU SCREEN ================= -->
+    <!-- Main entry point where user selects category -->
+    <div id="menuScreen" class="screen active">
+        <h1>🎮 Study Adventure</h1>
+
+        <!-- Category buttons -->
+        <button onclick="chooseCategory('math')">Math</button>
+        <button onclick="chooseCategory('reading')">Reading</button>
+        <button onclick="chooseCategory('sustainability')">Sustainability</button>
+        <button onclick="chooseCategory('art')">🎨 Art Mode</button>
+    </div>
+
+    <!-- ================= LEVEL SCREEN ================= -->
+    <!-- Allows user to pick difficulty -->
+    <div id="levelScreen" class="screen">
+        <h2>Select Difficulty</h2>
+
+        <!-- Buttons use dataset to pass difficulty -->
+        <button class="level-btn" data-level="easy">Easy</button>
+        <button class="level-btn" data-level="medium">Medium</button>
+        <button class="level-btn" data-level="hard">Hard</button>
+    </div>
+
+    <!-- ================= GAME SCREEN ================= -->
+    <!-- Main quiz interface -->
+    <div id="gameScreen" class="screen">
+
+        <!-- Timer (used for harder modes if extended later) -->
+        <p id="timerText"></p>
+
+        <p id="hintText"></p>
+
+        <!-- Story text (only used in reading mode) -->
+        <h3 id="storyText"></h3>
+
+        <!-- Question display -->
+        <h2 id="questionText"></h2>
+
+        <!-- Multiple choice container (used dynamically) -->
+        <div id="optionsContainer"></div>
+
+        <!-- User input for typing answers -->
+        <input type="text" id="answerInput" placeholder="Type answer">
+
+        <br><br>
+
+        <!-- Action buttons -->
+        <button id="submitButton" onclick="checkAnswer()">Submit</button>
+        <button id="hintButton" onclick="showHint()">Hint</button>
+        <button id="skipButton" onclick="skipQuestion()">Skip</button>
+
+        <!-- Feedback messages -->
+        <p id="feedback"></p>
+
+        <!-- Score tracking -->
+        <h3 id="scoreText">Score: 0</h3>
+        <p id="finalScore"></p>
+
+        <!-- Navigation -->
+        <button onclick="goToMenu()">Back</button>
+    </div>
+
+    <!-- ================= ART SCREEN ================= -->
+    <!-- Pixel art grid mode (advanced feature) -->
+    <div id="artScreen" class="screen">
+        <h2>🎨 Pixel Art Mode</h2>
+
+        <!-- Grid will be dynamically generated via JS -->
+        <div id="grid"></div>
+
+        <br>
+
+        <button onclick="goToMenu()">Back</button>
+    </div>
+
+</div>
+
+<!-- ===== HINT MODAL ===== -->
+<div id="hintModal" class="modal">
+    <div class="modal-content">
+        <span id="closeHintBtn">&times;</span>
+        <p id="modalHintText"></p>
+    </div>
+</div>
+
+<!-- Grid system script ( Alex's art feature) -->
+<script src="grid-art.js"></script>
+
+<!-- Main game logic -->
+<script src="Interactive-Study-Adventure-Game-Script.js"></script>
+
+</body>
+</html>
