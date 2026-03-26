@@ -4,7 +4,7 @@ function createGrid(rows, cols, drawing) {
 
   // Set container to grid layout
   container.style.display = "grid";
-  container.style.gridTemplateColumns = `repeat(${cols}, 10px)`;
+  container.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
   container.style.gap = "0px";
 
   // Initialize the 2D logic array
@@ -41,7 +41,5 @@ function createGrid(rows, cols, drawing) {
       container.appendChild(cell);
     }
   }
-
-  console.table(gridState); // Show the 2D array in console
   return gridState;
 }

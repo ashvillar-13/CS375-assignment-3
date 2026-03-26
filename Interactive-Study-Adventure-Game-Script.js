@@ -17,9 +17,16 @@ let answered = false;
 let correctIndex = -1;
 let currentStory = "";
 let allQuestionsData = {}; // Store all questions from JSON
+let lastFocusedElement = null;
 
 // ----- LOAD QUESTIONS JSON -----
 function loadQuestionsJSON(callback) {
+  if (window.outputQuestionsData) {
+    allQuestionsData = window.outputQuestionsData;
+    callback();
+    return;
+  }
+
   fetch("output.json")
     .then((response) => response.json())
     .then((data) => {
@@ -74,7 +81,7 @@ function chooseCategory(category) {
 
       // Set container to grid layout
       container.style.display = "grid";
-      container.style.gridTemplateColumns = `repeat(${cols}, 16px)`;
+      container.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
       container.style.gap = "0px";
 
       // Initialize the 2D logic array
@@ -83,28 +90,35 @@ function chooseCategory(category) {
         .fill(null)
         .map(() => Array(cols).fill(0));
 
+      function updateCanvasCell(cell, x, y) {
+        cell.setAttribute("aria-pressed", gridState[x][y] === 1 ? "true" : "false");
+        cell.setAttribute(
+          "aria-label",
+          `Row ${y + 1}, Column ${x + 1}, ${gridState[x][y] === 1 ? "filled" : "empty"}`
+        );
+      }
+
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-          const cell = document.createElement("div");
+          const cell = document.createElement("button");
+          cell.type = "button";
           cell.className = "canvas-cell";
 
           // Store coordinates in dataset for easy retrieval
           // dataset property allows you to attach custom data to an HTML element, attributes that start with data-
           cell.dataset.x = x;
           cell.dataset.y = y;
+          updateCanvasCell(cell, x, y);
 
           // Visual feedback and state update
           cell.addEventListener("click", () => {
             // Update the logic array (1 = occupied/clicked)
             if (gridState[x][y] == 0) {
-              // Toggle visual state
-              cell.style.backgroundColor = "black";
               gridState[x][y] = 1;
             } else {
-              // Untoggle visual state
-              cell.style.backgroundColor = "white";
               gridState[x][y] = 0;
             }
+            updateCanvasCell(cell, x, y);
           });
 
           container.appendChild(cell);
@@ -113,11 +127,13 @@ function chooseCategory(category) {
       return gridState;
     }
     const myCanvas = createGrid(16, 16);
+    document.querySelector("#canvas .canvas-cell")?.focus();
     return myCanvas;
   }
 
   document.getElementById("menuScreen").style.display = "none";
   document.getElementById("levelScreen").style.display = "block";
+  document.querySelector(".level-btn")?.focus();
 }
 
 // ----- TIMER (FOR HARD LEVELS) -----
@@ -134,7 +150,7 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timer);
       document.getElementById("feedback").textContent = "Time's up!";
-      moveToNextQuestion();
+      setTimeout(moveToNextQuestion, 1500);
     }
   }, 1000);
 }
@@ -173,9 +189,9 @@ function loadQuestion() {
       document.getElementById("optionsContainer").appendChild(btn);
     }
   } else {
-    document.getElementById("answerInput").style.display = "inline";
-    document.getElementById("submitButton").style.display = "inline";
-    document.getElementById("hintButton").style.display = "inline";
+    document.getElementById("answerInput").style.display = "";
+    document.getElementById("submitButton").style.display = "";
+    document.getElementById("hintButton").style.display = "";
   }
 
   // Timer
@@ -184,6 +200,12 @@ function loadQuestion() {
   } else {
     clearInterval(timer);
     document.getElementById("timerText").textContent = "";
+  }
+
+  if (sustainabilityMode) {
+    document.querySelector("#optionsContainer button")?.focus();
+  } else {
+    document.getElementById("answerInput").focus();
   }
 }
 
@@ -260,6 +282,7 @@ function endGame() {
 
   document.getElementById("finalScore").textContent =
     "Score: " + score + " | High Score: " + highScore;
+  document.getElementById("finalScore").focus();
 }
 
 // ----- CHECK ANSWER -----
@@ -305,7 +328,7 @@ function checkAnswer() {
 function skipQuestion() {
   clearInterval(timer);
   showTempFeedback("Question skipped.");
-  moveToNextQuestion();
+  setTimeout(moveToNextQuestion, 1000);
 }
 
 // ----- MULTIPLE CHOICE -----
@@ -329,12 +352,15 @@ function checkMCAnswer(index) {
 function showHint() {
   let hint = questions[currentQuestionIndex].hint;
   document.getElementById("modalHintText").textContent = "Hint: " + hint;
+  lastFocusedElement = document.activeElement;
   document.getElementById("hintModal").style.display = "block";
+  document.getElementById("closeHintBtn").focus();
 }
 
 // ----- CLOSE HINT -----
 function closeHint() {
   document.getElementById("hintModal").style.display = "none";
+  lastFocusedElement?.focus();
 }
 
 // ----- SCORE -----
@@ -350,6 +376,7 @@ function goToMenu() {
   document.getElementById("artScreen").style.display = "none";
 
   clearInterval(timer);
+  document.querySelector("#menuScreen button")?.focus();
 }
 
 // ----- ENTER KEY -----
@@ -364,6 +391,19 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("closeHintBtn").onclick = closeHint;
+  document.getElementById("closeHintBtn").addEventListener("keydown", function (event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+    }
+  });
+  document.addEventListener("keydown", function (event) {
+    if (
+      event.key === "Escape" &&
+      document.getElementById("hintModal").style.display === "block"
+    ) {
+      closeHint();
+    }
+  });
 
   var input = document.getElementById("answerInput");
   input.addEventListener("keypress", function (event) {

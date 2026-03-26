@@ -16,8 +16,8 @@
       <!-- ================= MENU SCREEN ================= -->
       <!-- Main entry point where user selects category -->
       <div id="menuScreen" class="screen active">
-        <h1>Quizard</h1>
-        <h1 id="grid"></h1>
+        <h1 class="brand-title">Quizard</h1>
+        <div id="grid" aria-hidden="true"></div>
         <script>
           let Quizard = [
             [1, 0],
@@ -174,12 +174,14 @@
           let myGameLogic = createGrid(16, 16, Quizard);
         </script>
         <!-- Category buttons -->
-        <button onclick="chooseCategory('math')">Math</button>
-        <button onclick="chooseCategory('reading')">Reading</button>
-        <button onclick="chooseCategory('sustainability')">
-          Sustainability
-        </button>
-        <button onclick="chooseCategory('art')">🎨 Art Mode</button>
+        <div class="button-group button-group--menu">
+          <button onclick="chooseCategory('math')">Math</button>
+          <button onclick="chooseCategory('reading')">Reading</button>
+          <button onclick="chooseCategory('sustainability')">
+            Sustainability
+          </button>
+          <button onclick="chooseCategory('art')">&#127912; Art Mode</button>
+        </div>
       </div>
 
       <!-- ================= LEVEL SCREEN ================= -->
@@ -188,18 +190,20 @@
         <h2>Select Difficulty</h2>
 
         <!-- Buttons use dataset to pass difficulty -->
-        <button class="level-btn" data-level="easy">Easy</button>
-        <button class="level-btn" data-level="medium">Medium</button>
-        <button class="level-btn" data-level="hard">Hard</button>
+        <div class="button-group">
+          <button class="level-btn" data-level="easy">Easy</button>
+          <button class="level-btn" data-level="medium">Medium</button>
+          <button class="level-btn" data-level="hard">Hard</button>
+        </div>
       </div>
 
       <!-- ================= GAME SCREEN ================= -->
       <!-- Main quiz interface -->
       <div id="gameScreen" class="screen">
         <!-- Timer (used for harder modes if extended later) -->
-        <p id="timerText"></p>
+        <p id="timerText" role="timer" aria-live="off" aria-atomic="true"></p>
 
-        <p id="hintText"></p>
+        <p id="hintText" aria-live="polite"></p>
 
         <!-- Story text (only used in reading mode) -->
         <h3 id="storyText"></h3>
@@ -208,44 +212,64 @@
         <h2 id="questionText"></h2>
 
         <!-- Multiple choice container (used dynamically) -->
-        <div id="optionsContainer"></div>
+        <div
+          id="optionsContainer"
+          class="button-group"
+          role="group"
+          aria-label="Answer options"
+        ></div>
 
         <!-- User input for typing answers -->
-        <input type="text" id="answerInput" placeholder="Type answer" />
-
-        <br /><br />
+        <input
+          type="text"
+          id="answerInput"
+          placeholder="Type answer"
+          aria-label="Type your answer"
+          aria-describedby="questionText"
+        />
 
         <!-- Action buttons -->
-        <button id="submitButton" onclick="checkAnswer()">Submit</button>
-        <button id="hintButton" onclick="showHint()">Hint</button>
-        <button id="skipButton" onclick="skipQuestion()">Skip</button>
+        <div class="button-group button-group--actions">
+          <button id="submitButton" onclick="checkAnswer()">Submit</button>
+          <button id="hintButton" onclick="showHint()">Hint</button>
+          <button id="skipButton" onclick="skipQuestion()">Skip</button>
+        </div>
 
         <!-- Feedback messages -->
-        <p id="feedback"></p>
+        <p id="feedback" role="status" aria-live="polite"></p>
 
         <!-- Score tracking -->
-        <h3 id="scoreText">Score: 0</h3>
-        <p id="finalScore"></p>
+        <h3 id="scoreText" aria-live="polite">Score: 0</h3>
+        <p id="finalScore" role="status" aria-live="polite" tabindex="-1"></p>
 
         <!-- Navigation -->
-        <button onclick="goToMenu()">Back</button>
+        <button class="back-button" onclick="goToMenu()">Back</button>
       </div>
 
       <!-- ================= ART SCREEN ================= -->
       <!-- Pixel art grid mode (advanced feature) -->
       <div id="artScreen" class="screen">
-        <h2>🎨 Pixel Art Mode</h2>
+        <h2>&#127912; Pixel Art Mode</h2>
 
         <!-- Grid will be dynamically generated via JS -->
-        <h3 id="canvas"></h3>
-        <button onclick="goToMenu()">Back</button>
+        <div id="canvas" aria-label="Pixel art canvas"></div>
+        <button class="back-button" onclick="goToMenu()">Back</button>
       </div>
     </div>
 
     <!-- ===== HINT MODAL ===== -->
-    <div id="hintModal" class="modal">
+    <div
+      id="hintModal"
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Hint"
+      aria-describedby="modalHintText"
+    >
       <div class="modal-content">
-        <span id="closeHintBtn">&times;</span>
+        <button type="button" id="closeHintBtn" aria-label="Close hint">
+          &times;
+        </button>
         <p id="modalHintText"></p>
       </div>
     </div>
