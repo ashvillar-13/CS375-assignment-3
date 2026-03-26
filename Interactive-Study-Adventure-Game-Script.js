@@ -1,198 +1,3 @@
-
-localStorage.removeItem("highScore");
-const mathEasyQuestions = [  // Easy Level Math Questions Array
-    { question: "2 + 2", answer: "4", hint: "Start at 2 and count up 2 more." },
-    { question: "5 * 3", answer: "15", hint: "Think of 5 + 5 + 5." },
-    { question: "10 - 6", answer: "4", hint: "Start at 10 and count back 6 steps." },
-    { question: "9 / 3", answer: "3", hint: "How many groups of 3 fit into 9?" },
-    { question: "7 + 1", answer: "8", hint: "What comes right after 7?" },
-    { question: "6 * 2", answer: "12", hint: "Think of 6 + 6." },
-    { question: "15 - 5", answer: "10", hint: "Start at 15 and count back 5 steps." },
-    { question: "8 + 7", answer: "15", hint: "Break 7 into 2 and 5. Add 8 + 2 first to make 10, then add the remaining 5." },
-    { question: "12 / 4", answer: "3", hint: "How many groups of 4 make 12?" },
-    { question: "3 * 4", answer: "12", hint: "Think of 3 + 3 + 3 + 3." }
-];
-
-const mathMediumQuestions = [ // Medium Level Math Questions Array
-    { question: "12 + 15", answer: "27", hint: "Add 10 + 15 first, then add 2." },
-    { question: "9 * 4", answer: "36", hint: "Think of 9 + 9 + 9 + 9." },
-    { question: "20 - 7", answer: "13", hint: "Subtract 10 first, then add back 3." },
-    { question: "16 / 4", answer: "4", hint: "How many groups of 4 fit into 16?" },
-    { question: "25 + 6", answer: "31", hint: "Add 5 to get 30, then add 1 more." },
-    { question: "18 - 9", answer: "9", hint: "Start at 18 and count back 9 steps." },
-    { question: "7 * 5", answer: "35", hint: "Think of 7 + 7 + 7 + 7 + 7." },
-    { question: "14 / 2", answer: "7", hint: "How many times does 2 go into 14?" },
-    { question: "11 + 19", answer: "30", hint: "Break 19 into 10 + 9. Add 11 + 10 first, then add 9." },
-    { question: "24 - 8", answer: "16", hint: "Start at 24 and count back 8 steps." }
-];
-
-const mathHardQuestions = [ // Hard Level Math Questions Array
-    { question: "14 * 3", answer: "42", hint: "Break 14 into 10 + 4. Multiply 10 * 3 and 4 * 3, then add both." },
-    { question: "50 - 18", answer: "32", hint: "Subtract 20 from 50, then add back 2." },
-    { question: "36 / 6", answer: "6", hint: "How many groups of 6 make 36?" },
-    { question: "19 + 27", answer: "46", hint: "Add 20 + 27 first, then subtract 1." },
-    { question: "8 * 7", answer: "56", hint: "Think of 8 groups of 7." },
-    { question: "45 / 5", answer: "9", hint: "How many groups of 5 in 45?" },
-    { question: "27 - 9", answer: "18", hint: "Subtract 10 from 27, then add back 1." },
-    { question: "12 * 4", answer: "48", hint: "Think of 12 + 12 + 12 + 12." },
-    { question: "63 / 7", answer: "9", hint: "How many groups of 7 fit into 63?" },
-    { question: "33 + 19", answer: "52", hint: "Add 33 + 10 = 43, then add 9." }
-];
-
-const readingEasyQuestions = [ // Easy Level Reading Questions Array
-    {
-        story: "Mia went to the park with her dog. She threw a ball, and the dog ran to get it. They played until it got dark.",
-        questions: [
-            { question: "Who went to the park?", answers: ["mia"], hint: "It is the girl's name." },
-            { question: "What did the dog chase?", answers: ["ball", "a ball", "the ball"], hint: "It is something you throw." },
-            { question: "Where did they go?", answers: ["park"], hint: "It is outside with grass." }
-        ]
-    },
-    {
-        story: "Jake studied for his test all night. The next day, he felt tired but ready. He passed the test with a good grade.",
-        questions: [
-            { question: "What did Jake study for?", answers: ["test", "a test", "his test"], hint: "It is something you take in school." },
-            { question: "How did he feel?", answers: ["tired"], hint: "He did not sleep much." },
-            { question: "What happened at the end?", answers: ["passed", "he passed", "passed the test", "he passed the test", "he got a good grade", "he got a good grade on his test"], hint: "Think about how Jake's test went." }
-        ]
-    },
-    {
-        story: "Lily went to the store with her mom. She picked out apples and bananas. They went home to make a snack.",
-        questions: [
-            { question: "Who did Lily go with?", answers: ["mom", "her mom"], hint: "It is a family member." },
-            { question: "What fruit did she pick?", answers: ["apples and bananas", "she picked apples and bananas", "she picked out apples and bananas", "lily picked apples and bananas", "lily picked out apples and bananas"], hint: "They're both something you eat." },
-            { question: "Where did they go after?", answers: ["home", "they went home", "they went home afterwards"], hint: "You live there." }
-        ]
-    }
-];
-
-const readingMediumQuestions = [ // Medium Level Reading Questions Array
-    {
-        story: "Jake studied all night for his test. He was tired but passed.",
-        questions: [
-            { question: "Why was Jake tired?", answers: ["he studied", "he was studying", "Jake was studying", "studied all night", "he studied all night", "Jake studied all night", "he was studying all night", "Jake was studying all night"], hint: "He stayed up." },
-            { question: "What did he pass?", answers: ["test", "the test", "he passed his test", "he passed the test", "Jake passed the test", "Jake passed his test"], hint: "School exam." }
-        ]
-    },
-    {
-        story: "Tom forgot his umbrella when he left the house. It started raining while he was walking to school, and he got very wet.",
-        questions: [
-            { question: "Why did Tom get wet?", answers: ["tom forgot his umbrella when he left the house", "he forgot his umbrella when he left the house", "tom forgot his umbrella when he left his house", "he forgot his umbrella when he left his house", "tom forgot his umbrella", "he forgot his umbrella", "forgot umbrella"], hint: "Think about what he didn’t bring." },
-            { question: "What was the weather like?", answers: ["it was raining", "it started raining", "it started to rain", "raining", "rainy", "rain"], hint: "Water fell from the sky." },
-            { question: "Where was Tom going?", answers: ["school", "he was going to school", "tom was going to school", "he was walking to school", "tom was walking to school"], hint: "Students go here." }
-        ]
-    },
-    {
-        story: "Emma practiced the piano every day. At her recital, she played beautifully and everyone clapped for her.",
-        questions: [
-            { question: "Why did Emma play the piano well?", answers: ["she practiced", "emma practiced", "practiced every day", "emma practiced every day", "she practiced every day"], hint: "She did this daily." },
-            { question: "What happened after she played?", answers: ["everyone clapped", "people clapped", "the people clapped", "they clapped", "audience clapped", "the audience clapped"], hint: "People showed they liked it." },
-            { question: "What was the event called?", answers: ["recital", "the recital", "her recital", "emma's recital", "emmas recital"], hint: "A performance." }
-        ]
-    }
-];
-
-const readingHardQuestions = [ // Hard Level Reading Questions Array
-    {
-        story: "Noah trained for months to climb the mountain. Even when it was difficult, he kept going. At the top, he felt proud of himself.",
-        questions: [
-            { question: "How did Noah feel at the end?", answers: ["proud", "he felt proud", "he felt proud of himself", "noah felt proud", "noah felt proud of himself", "happy", "accomplished", "he felt accomplished", "noah felt accomplished"], hint: "Think about his emotions when he reached the top." },
-            { question: "Why did Noah feel proud?", answers: ["he reached the top", "noah reached the top", "he reached the top of the mountain", "noah reached the top of the moutain", "he finished", "noah finished", "he made it", "noah made it", "he made it up the mountain", "noah made it up the mountain"], hint: "He completed his goal." },
-            { question: "What does this story teach?", answers: ["never give up", "to never give up", "keep trying", "to keep trying", "to keep on trying", "continue trying", "to continue trying", "dont quit", "to not quit", "persistence", "to be persistent"], hint: "Keep trying even when it's hard." },
-            { question: "How did Noah succeed?", answers: ["he kept going", "noah kept going", "he kept trying", "noah kept trying", "he was persistent", "noah was persistent"], hint: "He didn’t quit." }
-        ]
-    },
-    {
-        story: "Ava saw a lost puppy on the street. She took it home and cared for it until she found its owner. The owner was very thankful.",
-        questions: [
-            { question: "Why did Ava take the puppy?", answers: ["it was lost", "the puppy was lost", "because the puppy was lost", "the puppy was lost on the steet", "because the puppy was lost on the street"], hint: "It had no owner nearby." },
-            { question: "What kind of person is Ava?", answers: ["kind", "helpful", "caring", "compassionate"], hint: "She helped someone." },
-            { question: "What was the result?", answers: ["owner was thankful", "the owner was thankful", "owner was happy", "the owner was happy", "owner thanked her", "the owner thanked her", "owner was very thankful", "the owner was very thankful"], hint: "Someone appreciated her help." }
-        ]
-    },
-    {
-        story: "Ethan was given a challenging group project at school. At first, his team argued and could not agree on what to do. Ethan decided to listen to everyone's ideas and helped organize a plan. In the end, the group worked together and earned a high grade.",
-        questions: [
-            { question: "What problem did Ethan's group have at the beginning?", answers: ["they argued", "his team argued", "the team argued", "ethan's team argued", "the group argued", "they could not agree", "they couldn't agree", "the team could not agree", "the team couldn't agree", "they argued and could not agree", "they argued and couldn't agree", "his team argued and could not agree", "his team argued and couldn't agree", "ethan's team argued and could not agree", "ethan's team argued and couldn't agree"], hint: "They did not work well together at first." },
-            { question: "What did Ethan do to fix the problem?", answers: ["he listened", "ethan listened", "he listened to everyone", "ethan listened to everyone", "he listened to everyone's ideas", "ethan listened to everyone's ideas", "he helped organize a plan", "ethan helped organize a plan", "he listened and organized a plan", "ethan listened and organized a plan"], hint: "He paid attention to others and made a plan." },
-            { question: "What happened at the end?", answers: ["they worked together", "the group worked together", "they worked together and got a high grade", "the group worked together and got a high grade", "they earned a high grade", "the group earned a high grade", "they succeeded", "the group succeeded"], hint: "Think about teamwork and success." },
-            { question: "What is the main lesson of the story?", answers: ["teamwork", "the importance of teamwork", "working together", "to work together", "communication", "listening to others", "to listen to others", "the importance of listening"], hint: "Working well with others leads to success." }
-        ]
-    }
-];
-
-// Easy Level Sustainabiliity Questions Array (True/False style)
-const sustainabilityEasy = [
-    {
-        question: "Turning off lights when leaving a room conserves energy.",
-        options: ["True", "False", "Not Sure"],
-        correct: 0
-    },
-    {
-        question: "Recycling helps reduce landfill waste.",
-        options: ["True", "False", "Not Sure"],
-        correct: 0
-    },
-    {
-        question: "Watering plants in the middle of the day is the most water-efficient.",
-        options: ["True", "False", "Not Sure"],
-        correct: 1
-    },
-    {
-        question: "Keeping blinds closed during the hottest parts of the day to limit excess heat in the summer is a way to conserve energy.",
-        options: ["True", "False", "Not Sure"],
-        correct: 0
-    }
-];
-
-// Medium Level Sustainabiliity Questions Array (3 options)
-const sustainabilityMedium = [
-    {
-        question: "Which of the following is a renewable energy source?",
-        options: ["Coal", "Solar", "Oil"],
-        correct: 1
-    },
-    {
-        question: "Which of these actions helps conserve water?",
-        options: ["Fix leaks", "Leave tap running", "Overwater plants"],
-        correct: 0
-    },
-    {
-        question: "Which material is biodegradable?",
-        options: ["Plastic", "Paper", "Styrofoam"],
-        correct: 1
-    },
-    {
-        question: "Which energy source produces the least greenhouse gas?",
-        options: ["Natural Gas", "Coal", "Wind"],
-        correct: 2
-    }
-];
-
-// Hard Level Sustainabiliity Questions Array (3 options)
-const sustainabilityHard = [
-    {
-        question: "Which material is biodegradable?",
-        options: ["Plastic", "Paper", "Glass"],
-        correct: 1
-    },
-    {
-        question: "Recycling helps reduce landfill waste.",
-        options: ["True", "False", "Not Sure"],
-        correct: 0
-    },
-    {
-        question: "Which of the following is a is renewable energy source?",
-        options: ["Coal", "Gas", "Solar"],
-        correct: 2
-    },
-    {
-        question: "Turning off lights when not in a room conserves energy.",
-        options: ["True", "False", "Not Sure"],
-        correct: 0
-    }
-];
-
 // ----- GAME VARIABLES -----
 let currentLevel = "";
 let questions = [];
@@ -200,13 +5,25 @@ let currentQuestionIndex = 0;
 let score = 0;
 let highScore = Number(localStorage.getItem("highScore")) || 0; // Reset High Score
 // Timer for Hard Mode:
-let timer;  // stores setInterval reference
+let timer;  // stores setInterval (timer) reference
 let timeLeft = 15; // seconds per question
 let readingMode = false;
 let sustainabilityMode = false;
 let answered = false;
 let correctIndex = -1;
 let currentStory = "";
+let allQuestionsData = {}; // Store all questions from JSON
+
+// ----- LOAD QUESTIONS JSON -----
+function loadQuestionsJSON(callback) {
+    fetch("output.json")
+        .then(response => response.json())
+        .then(data => {
+            allQuestionsData = data;
+            callback();
+        })
+        .catch(error => console.error("Error loading questions JSON:", error));
+}
 
 // ----- TEMPORARY FEEDBACK FUNCTION -----
 function showTempFeedback(message) {
@@ -220,12 +37,14 @@ function showTempFeedback(message) {
 
 // ----- CLEAR SCREEN FUNCTION ----- 
 function clearScreenForNextQuestion() {
+    document.getElementById("hintModal").style.display = "none";
     document.getElementById("questionText").textContent = "";
     document.getElementById("storyText").textContent = "";
     document.getElementById("optionsContainer").innerHTML = "";
     document.getElementById("answerInput").value = "";
     document.getElementById("feedback").textContent = "";
     document.getElementById("timerText").textContent = "";
+    document.getElementById("hintText").textContent = "";
 }
 
 // ----- 'CHOOSE A CATEGORY' SECTION -----
@@ -272,21 +91,14 @@ function loadQuestion() {
 
     document.getElementById("questionText").textContent = q.question || "";
     
-    if (readingMode) {
-        if (q.story) {
-        // If we are in reading mode, keep the story as it is
+    if (readingMode && q.story) {
         document.getElementById("storyText").textContent = q.story;
-        } else {
-        // If not reading mode, clear the story text
-        document.getElementById("storyText").textContent = "";
-        }
-    } else {
-        document.getElementById("storyText").textContent = "";
     }
 
     document.getElementById("hintText").textContent = "";
     document.getElementById("optionsContainer").innerHTML = "";
     document.getElementById("answerInput").value = "";
+
 
     // Sustainability buttons
     if (sustainabilityMode) {
@@ -331,13 +143,8 @@ function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         // Pick a random index from 0 to i
         let j = Math.floor(Math.random() * (i + 1));
-
-        // Swap elements at i and j
-        let temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        [array[i], array[j]] = [array[j], array[i]];
     }
-    return array;
 }
 
 // ----- SET LEVEL -----
@@ -364,72 +171,32 @@ function setLevel(level) {
         document.getElementById("answerInput").style.display = "inline";
         document.getElementById("skipButton").style.display = "inline";
     }
-    
+
+// ----- LOAD QUESTIONS FROM JSON -----
     if (readingMode) { // reading section
-        let storyArray; // copies the array 
-
-        if (level === "easy") {
-            storyArray = readingEasyQuestions.slice();
+        let storyArray = allQuestionsData.reading[level];
+        shuffleArray(storyArray);
+        questions = [];
+        for (let passage of storyArray) {
+            for (let q of passage.questions) {
+                questions.push({
+                    question: q.question,
+                    answers: q.answers,
+                    hint: q.hint,
+                    story: passage.story
+                });
+            }
         }
-        else if (level === "medium") {
-            storyArray = readingMediumQuestions.slice();
-        }
-        else if (level === "hard") {
-            storyArray = readingHardQuestions.slice();
-        }
-
-        shuffleArray(storyArray); // shuffle the array of all stories
-
-        questions = []; // empty list
-
-    for (let i = 0; i < storyArray.length; i++) { // go through every story
-
-        let passage = storyArray[i];
-
-        // go through each question in that story
-        for (let j = 0; j < passage.questions.length; j++) {
-
-            let q = passage.questions[j];
-
-            questions.push({ // add question + story together
-                question: q.question,
-                answers: q.answers,
-                hint: q.hint,
-                story: passage.story
-            });
-        }
-    }
-
-    }
-    else if (sustainabilityMode) { // sustainability section
-
-        if (level === "easy") {
-            questions = sustainabilityEasy;
-        }
-        else if (level === "medium") {
-            questions = sustainabilityMedium;
-        }
-        else if (level === "hard") {
-            questions = sustainabilityHard;
-        }
-
-    } 
-    else { // math section
-
-        if (level === "easy") {
-            questions = mathEasyQuestions;
-        }
-        else if (level === "medium") {
-            questions = mathMediumQuestions;
-        }
-        else if (level === "hard") {
-            questions = mathHardQuestions;
-        }
+    } else if (sustainabilityMode) { // sustainability section
+        questions = allQuestionsData.sustainability[level];
+    } else {
+        questions = allQuestionsData.math[level];
     }
 
     updateScoreText();
     loadQuestion();
 }
+
 
 // ----- START GAME -----
 function startGame(level) {
@@ -442,10 +209,8 @@ function startGame(level) {
 // ----- NEXT QUESTION -----
 function moveToNextQuestion() {
     clearScreenForNextQuestion(); // clear everything on screen first before next question
-
     clearInterval(timer);
     currentQuestionIndex++;
-
     if (currentQuestionIndex >= questions.length) {
         endGame();
         return;
@@ -496,40 +261,23 @@ function checkAnswer() {
     }
 
     let correct = false;
-
-    if (readingMode) {
-        let answers = questions[currentQuestionIndex].answers;
-
-        // check all possible answers
-        for (let i = 0; i < answers.length; i++) {
-            let correctAnswer = answers[i].toLowerCase().trim();
-
-            if (userAnswer === correctAnswer) {
-                correct = true;
+        if (readingMode) {
+            for (let ans of questions[currentQuestionIndex].answers) {
+                if (userAnswer === ans.toLowerCase().trim()) correct = true;
             }
+        } else {
+            if (userAnswer === questions[currentQuestionIndex].answer.toLowerCase().trim()) correct = true;
         }
 
-    } else {
-        let correctAnswer = questions[currentQuestionIndex].answer.toLowerCase().trim();
-
-        if (userAnswer === correctAnswer) {
-            correct = true;
+        if (correct) {
+            answered = true;
+            score++;
+            updateScoreText();
+            showTempFeedback("Correct!");
+            setTimeout(moveToNextQuestion, 1500); // 1.5 seconds
+        } else {
+            showTempFeedback("Wrong answer. Try using a hint.");
         }
-    }
-
-    if (correct) {
-        answered = true;
-        score++;
-        updateScoreText();
-        showTempFeedback("Correct!");
-
-        setTimeout(function() {
-            moveToNextQuestion();
-        }, 1500); // 1.5 seconds
-
-    } else {
-        showTempFeedback("Wrong answer. Try using a hint.");
-    }
 }
 
 
@@ -553,7 +301,7 @@ function checkMCAnswer(index) {
     
     clearInterval(timer); // Stop timer immediately when user clicks
 
-    var correctIndex = questions[currentQuestionIndex].correct;
+    let correctIndex = questions[currentQuestionIndex].correct;
 
     if (index === correctIndex) {
         score++;
@@ -573,11 +321,25 @@ function checkMCAnswer(index) {
 }
 
 
-// ----- HINT -----
+// ----- SHOW HINT -----
 function showHint() {
-    document.getElementById("hintText").textContent = questions[currentQuestionIndex].hint;
-    document.getElementById("hintButton").disabled = true;
+    let hint = questions[currentQuestionIndex].hint; // Get the current question's hint
+
+    document.getElementById("hintText").innerText = hint; // Put the hint text in the popup
+
+    document.getElementById("hintModal").style.display = "block"; // Show the popup
 }
+
+// ----- CLOSE HINT -----
+function closeHint() {
+    document.getElementById("hintModal").style.display = "none"; // Hide the popup
+}
+
+// ----- CONNECT CLOSE BUTTON AFTER PAGE LOAD -----
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("closeHintBtn").onclick = closeHint; // When the close button is clicked, run closeHint
+});
+
 
 // ----- SCORE -----
 function updateScoreText() {
@@ -607,8 +369,20 @@ function goToMenu() {
 
 // ----- ENTER KEY (FOR SUBMIT BUTTON)-----
 document.addEventListener("DOMContentLoaded", function () {
-    var input = document.getElementById("answerInput");
+    // Load JSON first
+    loadQuestionsJSON(function() {
+        console.log("Questions loaded!");
+        const levelButtons = document.querySelectorAll(".level-btn"); // Now enable level buttons
+        levelButtons.forEach(btn => {
+            btn.addEventListener("click", function() {
+                startGame(btn.dataset.level);
+            });
+        });
+    });
 
+    document.getElementById("closeHintBtn").onclick = closeHint; // Hint close button
+
+    var input = document.getElementById("answerInput"); // Enter key
     input.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             checkAnswer();
