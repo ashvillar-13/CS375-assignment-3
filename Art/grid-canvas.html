@@ -61,20 +61,17 @@
                             // Toggle visual state
                             cell.style.backgroundColor = 'black';
                             gridState[x][y] = 1;
-                            console.log(`gridState[${x}][${y}] = 1;`);
                         }
                         else {
                             // Untoggle visual state
                             cell.style.backgroundColor = 'white';
                             gridState[x][y] = 0;
-                            console.log(`gridState[${x}][${y}] = 0;`);
                         }
                     });
 
                     container.appendChild(cell);
                 }
             }
-            console.table(gridState); // Show the 2D array in console
             return gridState;
         }
 
@@ -83,18 +80,16 @@
         const btn = document.querySelector('button');
 
         btn.addEventListener('click', () => {
-            let stringArrayX = new String('');
-            let stringArrayY = new String('');
+            let stringArray = new String('');
             for (let y = 0; y < 16; y++) { 
                 for (let x = 0; x < 16; x++) { 
                     if(myGameLogic[x][y] == 1) {
-                        stringArrayX = stringArrayX + `${x}, `;
-                        stringArrayY = stringArrayY + `${y}, `;
+                        stringArray += `[${x},${y}], `;
                     }
                 }
             }
-            alert("X and Y locations in console");
-            console.log("let drawingX = [" + stringArrayX + ']\n' + "let drawingY = [" + stringArrayY + ']');
+            alert("Locations in console");
+            console.log(stringArray);
         });
     </script>
 </body>

@@ -14,12 +14,8 @@ function createGrid(rows, cols, drawing) {
     .fill(null)
     .map(() => Array(cols).fill(0));
 
-  // for (let cord = 0; cord < drawingX.length; cord++) {
-  //   gridState[drawingX[cord]][drawingY[cord]] = 1;
-  // }
-
-  for (let cord = 0; cord < drawing.length; cord++) {
-    gridbox = drawing[cord];
+  for (let location = 0; location < drawing.length; location++) {
+    gridbox = drawing[location];
     gridState[gridbox[0]][gridbox[1]] = 1;
   }
 
