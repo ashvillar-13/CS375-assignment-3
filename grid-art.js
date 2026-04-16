@@ -14,9 +14,18 @@ function createGrid(rows, cols, drawing) {
     .fill(null)
     .map(() => Array(cols).fill(0));
 
+  // Fill gridState based on drawing coordinates
   for (let location = 0; location < drawing.length; location++) {
-    gridbox = drawing[location];
-    gridState[gridbox[0]][gridbox[1]] = 1;
+    let gridbox = drawing[location];
+
+    let x = gridbox[0];
+    let y = gridbox[1];
+
+    // Safety check to prevent missing/invalid pixels
+    if (x >= 0 && x < cols && y >= 0 && y < rows) {
+      // FIX: consistent indexing (row = y, column = x)
+      gridState[y][x] = 1;
+    }
   }
 
   for (let y = 0; y < rows; y++) {
@@ -30,7 +39,7 @@ function createGrid(rows, cols, drawing) {
       cell.dataset.x = x;
       cell.dataset.y = y;
 
-      if (gridState[x][y] == 1) {
+      if (gridState[y][x] == 1) {
         // Toggle visual state
         cell.style.backgroundColor = "black";
       } else {

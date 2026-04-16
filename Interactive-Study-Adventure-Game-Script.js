@@ -1,9 +1,19 @@
+// ---- IMPORTS ----
+import { renderQuestion, showFeedback } from "./uiController.js";
+import { updateScore, isCorrectAnswer } from "./gameLogic.js";
+import { loadQuestions } from "./dataManager.js";
+
 // ----- GAME VARIABLES -----
 let currentLevel = "";
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
-let highScore = Number(localStorage.getItem("highScore")) || 0;
+let mathHighScore = Number(localStorage.getItem("mathHighScore")) || 0;
+let readingHighScore = Number(localStorage.getItem("readingHighScore")) || 0;
+let sustainabilityHighScore = Number(localStorage.getItem("sustainabilityHighScore")) || 0;
+let questionLocked = false;
+let activeMode = "";
+let correctIndex = -1;
 
 // Timer for Hard Mode:
 let timer;
@@ -11,29 +21,21 @@ let timeLeft = 5;
 
 let readingMode = false;
 let sustainabilityMode = false;
-let artMode = false; // NEW (for art feature)
+let artMode = false; 
 
 let answered = false;
-let correctIndex = -1;
-let currentStory = "";
-let allQuestionsData = {}; // Store all questions from JSON
 let lastFocusedElement = null;
+let allQuestionsData = null;
 
-// ----- LOAD QUESTIONS JSON -----
-function loadQuestionsJSON(callback) {
-  if (window.outputQuestionsData) {
-    allQuestionsData = window.outputQuestionsData;
-    callback();
-    return;
+// ---- HIGH SCORE HELPER METHOD ----
+function getHighScore() {
+  if (readingMode) {
+    return readingHighScore;
   }
-
-  fetch("output.json")
-    .then((response) => response.json())
-    .then((data) => {
-      allQuestionsData = data;
-      callback();
-    })
-    .catch((error) => console.error("Error loading questions JSON:", error));
+  if (sustainabilityMode) { 
+    return sustainabilityHighScore;
+  }
+  return mathHighScore;
 }
 
 // ----- TEMPORARY FEEDBACK FUNCTION -----
@@ -149,6 +151,7 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timer);
+
       document.getElementById("feedback").textContent = "Time's up!";
       setTimeout(moveToNextQuestion, 1500);
     }
@@ -159,14 +162,13 @@ function startTimer() {
 function loadQuestion() {
   clearScreenForNextQuestion();
 
+  questionLocked = false;
+  clearInterval(timer);
+
   answered = false;
   var q = questions[currentQuestionIndex];
 
-  document.getElementById("questionText").textContent = q.question || "";
-
-  if (readingMode && q.story) {
-    document.getElementById("storyText").textContent = q.story;
-  }
+  renderQuestion(q, readingMode); // new line for assignment 3
 
   // Sustainability mode (MC buttons)
   if (sustainabilityMode) {
@@ -192,6 +194,7 @@ function loadQuestion() {
     document.getElementById("answerInput").style.display = "";
     document.getElementById("submitButton").style.display = "";
     document.getElementById("hintButton").style.display = "";
+    document.getElementById("optionsContainer").innerHTML = "";
   }
 
   // Timer
@@ -219,9 +222,23 @@ function shuffleArray(array) {
 
 // ----- SET LEVEL -----
 function setLevel(level) {
+  questionLocked = false;
+  answered = false;
+  clearInterval(timer);
+
   currentLevel = level;
   currentQuestionIndex = 0;
   score = 0;
+
+  if (readingMode) {
+    activeMode = "reading";
+  } 
+  else if (sustainabilityMode) {
+    activeMode = "sustainability";
+  } 
+  else {
+    activeMode = "math";
+  }
 
   if (readingMode) {
     let storyArray = allQuestionsData.reading[level];
@@ -250,6 +267,10 @@ function setLevel(level) {
 
 // ----- START GAME -----
 function startGame(level) {
+  answered = false;
+  questionLocked = false;
+  clearInterval(timer);
+
   setLevel(level);
 
   document.getElementById("levelScreen").style.display = "none";
@@ -258,7 +279,7 @@ function startGame(level) {
 
 // ----- NEXT QUESTION -----
 function moveToNextQuestion() {
-  clearScreenForNextQuestion();
+  if (!questionLocked) questionLocked = true;
   clearInterval(timer);
 
   currentQuestionIndex++;
@@ -275,18 +296,41 @@ function moveToNextQuestion() {
 function endGame() {
   clearInterval(timer);
 
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem("highScore", highScore);
+  if (activeMode === "reading" && score > readingHighScore) {
+    readingHighScore = score;
+    localStorage.setItem("readingHighScore", readingHighScore);
+  } 
+  else if (activeMode === "sustainability" && score > sustainabilityHighScore) {
+    sustainabilityHighScore = score;
+    localStorage.setItem("sustainabilityHighScore", sustainabilityHighScore);
+  } 
+  else if (activeMode === "math" && score > mathHighScore) {
+    mathHighScore = score;
+    localStorage.setItem("mathHighScore", mathHighScore);
+  }
+
+  let displayHighScore;
+
+  if (activeMode === "reading") {
+    displayHighScore = readingHighScore;
+  } else if (activeMode === "sustainability") {
+    displayHighScore = sustainabilityHighScore;
+  } else {
+    displayHighScore = mathHighScore;
   }
 
   document.getElementById("finalScore").textContent =
-    "Score: " + score + " | High Score: " + highScore;
+    "Score: " + score + " | High Score: " + displayHighScore;
+
   document.getElementById("finalScore").focus();
+
+  console.log("MODE:", activeMode);
+console.log("SCORES:", mathHighScore, readingHighScore, sustainabilityHighScore);
 }
 
 // ----- CHECK ANSWER -----
 function checkAnswer() {
+
   if (answered) return;
 
   let userAnswer = document
@@ -303,30 +347,32 @@ function checkAnswer() {
 
   if (readingMode) {
     for (let ans of questions[currentQuestionIndex].answers) {
-      if (userAnswer === ans.toLowerCase().trim()) correct = true;
+      if (isCorrectAnswer(userAnswer, ans)) { // new line for assignment 3
+        correct = true; // new line for assignment 3
+      }
     }
   } else {
-    if (
-      userAnswer === questions[currentQuestionIndex].answer.toLowerCase().trim()
-    ) {
-      correct = true;
-    }
+    correct = isCorrectAnswer(userAnswer,questions[currentQuestionIndex].answer); // new line for assignment 3
   }
 
   if (correct) {
     answered = true;
-    score++;
+    clearInterval(timer);
+
+    score = updateScore(score); // new line for assignment 3
     updateScoreText();
-    showTempFeedback("Correct!");
+    showFeedback("Correct!"); // new line for assignment 3
     setTimeout(moveToNextQuestion, 1500);
   } else {
     showTempFeedback("Wrong answer. Try using a hint.");
+    return;
   }
 }
 
 // ----- SKIP QUESTION -----
 function skipQuestion() {
   clearInterval(timer);
+
   showTempFeedback("Question skipped.");
   setTimeout(moveToNextQuestion, 1000);
 }
@@ -338,9 +384,9 @@ function checkMCAnswer(index) {
   let correctIndex = questions[currentQuestionIndex].correct;
 
   if (index === correctIndex) {
-    score++;
+    score = updateScore(score); // new line for assignment 3
     updateScoreText();
-    showTempFeedback("Correct!");
+    showFeedback("Correct!"); // new line for assignment 3
   } else {
     showTempFeedback("Incorrect.");
   }
@@ -379,36 +425,53 @@ function goToMenu() {
   document.querySelector("#menuScreen button")?.focus();
 }
 
-// ----- ENTER KEY -----
+// ----- STARTUP/EVENT LISTENERS -----
 document.addEventListener("DOMContentLoaded", function () {
-  loadQuestionsJSON(function () {
-    const levelButtons = document.querySelectorAll(".level-btn");
-    levelButtons.forEach((btn) => {
+
+  loadQuestions(function (data) {
+    allQuestionsData = data;
+
+    // Level buttons
+    document.querySelectorAll(".level-btn").forEach((btn) => {
       btn.addEventListener("click", function () {
         startGame(btn.dataset.level);
       });
     });
+
+    // Category buttons
+    document.querySelectorAll(".category-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        chooseCategory(btn.dataset.category);
+      });
+    });
+
+    // Grid (only if exists)
+    if (typeof createGrid !== "undefined") {
+      createGrid(16, 16, Quizard);
+    }
   });
+
+  // Buttons
+  document.getElementById("submitButton").addEventListener("click", checkAnswer);
+  document.getElementById("skipButton").addEventListener("click", skipQuestion);
+  document.getElementById("hintButton").addEventListener("click", showHint);
+  document.getElementById("backButton").addEventListener("click", goToMenu);
+  document.getElementById("artBackButton").addEventListener("click", goToMenu);
 
   document.getElementById("closeHintBtn").onclick = closeHint;
-  document.getElementById("closeHintBtn").addEventListener("keydown", function (event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-    }
-  });
+
   document.addEventListener("keydown", function (event) {
-    if (
-      event.key === "Escape" &&
-      document.getElementById("hintModal").style.display === "block"
-    ) {
-      closeHint();
+    if (event.key === "Escape") {
+      if (document.getElementById("hintModal").style.display === "block") {
+        closeHint();
+      }
     }
   });
 
-  var input = document.getElementById("answerInput");
-  input.addEventListener("keypress", function (event) {
+  document.getElementById("answerInput").addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
       checkAnswer();
     }
   });
+
 });
